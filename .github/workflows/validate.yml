@@ -1,0 +1,53 @@
+name: validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate skill
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show PowerShell version
+        shell: pwsh
+        run: $PSVersionTable.PSVersion.ToString()
+
+      - name: Run skill self-check
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./scripts/validate-skill.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Syntax check scripts
+        shell: pwsh
+        run: |
+          $failed = 0
+          Get-ChildItem ./scripts -Filter *.ps1 | ForEach-Object {
+            $tokens = $null; $errors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$errors)
+            if ($errors.Count -gt 0) {
+              $failed++
+              Write-Host "::error file=$($_.Name)::$($errors[0].Message)"
+            }
+          }
+          if ($failed -gt 0) { exit 1 }
+          Write-Host "All scripts parsed successfully."
+
+      - name: Catalog JSON sanity
+        shell: pwsh
+        run: |
+          $catalog = Get-Content ./resources/junk-catalog.json -Raw -Encoding UTF8 | ConvertFrom-Json
+          if (-not $catalog.targets -or $catalog.targets.Count -eq 0) { throw 'catalog has no targets' }
+          $levels = $catalog.targets | Group-Object level | ForEach-Object { "$($_.Name)=$($_.Count)" }
+          Write-Host "catalog levels: $($levels -join ', ')"

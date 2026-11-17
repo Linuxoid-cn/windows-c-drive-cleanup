@@ -1,0 +1,9 @@
+windows-c-drive-cleanup
+Copyright 2026 Linuxoid-cn
+
+本项目的开源许可证与 ChatGLM3 开源项目保持一致，采用 Apache License 2.0。
+
+说明：
+- ChatGLM3 代码仓库（https://github.com/THUDM/ChatGLM3）的 LICENSE 为 Apache-2.0；
+  其 MODEL_LICENSE（ChatGLM3-6B License）仅适用于模型权重，不适用于本项目。
+- 本项目不包含任何模型权重，仅包含 PowerShell 脚本、JSON 规则与 Markdown 文档。
