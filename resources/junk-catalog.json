@@ -1,0 +1,395 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-17",
+  "description": "C 盘清理白名单。只允许扫描/删除本文件中的路径；level=A 可安全清理，level=B 需用户确认，level=C 禁止删除（仅统计）。",
+  "levels": {
+    "A": "可安全清理",
+    "B": "需要进一步判断/用户确认",
+    "C": "禁止自动删除"
+  },
+  "targets": [
+    {
+      "id": "user-temp",
+      "name": "用户临时文件",
+      "level": "A",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\Temp",
+      "notes": "正在使用的文件会被跳过；删除后应用会重建。"
+    },
+    {
+      "id": "windows-temp",
+      "name": "Windows 系统临时文件",
+      "level": "A",
+      "risk": "low",
+      "type": "path",
+      "path": "C:\\Windows\\Temp",
+      "requiresAdmin": true,
+      "notes": "非管理员通常无法访问。"
+    },
+    {
+      "id": "thumbnails",
+      "name": "缩略图/图标缓存",
+      "level": "A",
+      "risk": "low",
+      "type": "filtered",
+      "path": "%LOCALAPPDATA%\\Microsoft\\Windows\\Explorer",
+      "filters": ["thumbcache_*.db", "iconcache_*.db"],
+      "notes": "只删除缓存 db，不碰目录内其他文件。"
+    },
+    {
+      "id": "inetcache",
+      "name": "IE/系统 INetCache",
+      "level": "A",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\Microsoft\\Windows\\INetCache",
+      "notes": ""
+    },
+    {
+      "id": "nvidia-dxcache",
+      "name": "NVIDIA DXCache（着色器缓存）",
+      "level": "B",
+      "risk": "low-medium",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\NVIDIA\\DXCache",
+      "notes": "删除后游戏/3D 软件首次运行会重新编译着色器，可能短暂卡顿。"
+    },
+    {
+      "id": "nvidia-glcache",
+      "name": "NVIDIA GLCache",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\NVIDIA\\GLCache",
+      "notes": ""
+    },
+    {
+      "id": "amd-dxcache",
+      "name": "AMD DxcCache（着色器缓存）",
+      "level": "B",
+      "risk": "low-medium",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\AMD\\DxcCache",
+      "notes": "删除后可重新生成。"
+    },
+    {
+      "id": "d3dscache",
+      "name": "D3D 着色器缓存",
+      "level": "B",
+      "risk": "low-medium",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\D3DSCache",
+      "notes": "存在才统计；删除后可重新生成。"
+    },
+    {
+      "id": "edge-cache",
+      "name": "Edge 浏览器缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "browser",
+      "root": "%LOCALAPPDATA%\\Microsoft\\Edge\\User Data",
+      "profilePattern": "^(Default|Profile \\d+)$",
+      "subtargets": ["Cache", "Code Cache", "GPUCache", "Service Worker\\CacheStorage"],
+      "notes": "只删缓存目录，不动 Cookie、密码、书签、历史记录。"
+    },
+    {
+      "id": "chrome-cache",
+      "name": "Chrome 浏览器缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "browser",
+      "root": "%LOCALAPPDATA%\\Google\\Chrome\\User Data",
+      "profilePattern": "^(Default|Profile \\d+)$",
+      "subtargets": ["Cache", "Code Cache", "GPUCache", "Service Worker\\CacheStorage"],
+      "notes": "只删缓存目录，不动登录态与书签。"
+    },
+    {
+      "id": "brave-cache",
+      "name": "Brave 浏览器缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "browser",
+      "root": "%LOCALAPPDATA%\\BraveSoftware\\Brave-Browser\\User Data",
+      "profilePattern": "^(Default|Profile \\d+)$",
+      "subtargets": ["Cache", "Code Cache", "GPUCache", "Service Worker\\CacheStorage"],
+      "notes": ""
+    },
+    {
+      "id": "firefox-cache",
+      "name": "Firefox 缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "browser",
+      "root": "%APPDATA%\\Mozilla\\Firefox\\Profiles",
+      "profilePattern": ".*",
+      "subtargets": ["cache2"],
+      "notes": ""
+    },
+    {
+      "id": "steam-htmlcache",
+      "name": "Steam 客户端网页缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\Steam\\htmlcache",
+      "notes": "需关闭 Steam 或跳过占用文件。"
+    },
+    {
+      "id": "npm-cache",
+      "name": "npm 缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\npm-cache",
+      "notes": ""
+    },
+    {
+      "id": "pnpm-store",
+      "name": "pnpm 存储",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\pnpm\\store",
+      "notes": "删除后依赖按需重新下载。"
+    },
+    {
+      "id": "yarn-cache",
+      "name": "Yarn 缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\Yarn\\Cache",
+      "notes": ""
+    },
+    {
+      "id": "pip-cache",
+      "name": "pip 缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\pip\\cache",
+      "notes": ""
+    },
+    {
+      "id": "nuget-packages",
+      "name": "NuGet 全局包缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%USERPROFILE%\\.nuget\\packages",
+      "notes": "开发依赖缓存，删除后构建时重新还原；离线环境慎用。"
+    },
+    {
+      "id": "crashdumps",
+      "name": "崩溃转储",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\CrashDumps",
+      "notes": "诊断信息，删除不影响系统运行。"
+    },
+    {
+      "id": "wer",
+      "name": "Windows 错误报告",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "C:\\ProgramData\\Microsoft\\Windows\\WER",
+      "requiresAdmin": true,
+      "notes": ""
+    },
+    {
+      "id": "windows-update-download",
+      "name": "Windows 更新下载缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "C:\\Windows\\SoftwareDistribution\\Download",
+      "requiresAdmin": true,
+      "notes": "只删下载缓存，不动已安装更新；建议先停 wuauserv（由用户决定）。"
+    },
+    {
+      "id": "windows-minidump",
+      "name": "Windows 小型转储",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "C:\\Windows\\Minidump",
+      "requiresAdmin": true,
+      "notes": ""
+    },
+    {
+      "id": "memory-dmp",
+      "name": "系统内存转储",
+      "level": "B",
+      "risk": "low",
+      "type": "file",
+      "path": "C:\\Windows\\MEMORY.DMP",
+      "requiresAdmin": true,
+      "notes": "崩溃诊断用，删除不影响系统。"
+    },
+    {
+      "id": "recycle-bin",
+      "name": "回收站",
+      "level": "B",
+      "risk": "low",
+      "type": "recycle",
+      "path": "C:\\$Recycle.Bin",
+      "notes": "清空后不可恢复，必须用户确认。"
+    },
+    {
+      "id": "dsh-cache",
+      "name": "DSH 缓存",
+      "level": "B",
+      "risk": "low",
+      "type": "path",
+      "path": "%USERPROFILE%\\.dsh\\cache",
+      "notes": ""
+    },
+    {
+      "id": "dsh-updater-pending",
+      "name": "DSH 更新待安装包",
+      "level": "B",
+      "risk": "medium",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\@deepseek-aidsh-desktop-updater\\pending",
+      "notes": "删除可能取消待安装更新，需单独确认（-IncludeMedium）。"
+    },
+    {
+      "id": "app-shell-cache",
+      "name": "应用安装缓存 app_shell_cache",
+      "level": "B",
+      "risk": "medium",
+      "type": "path",
+      "path": "%LOCALAPPDATA%\\app_shell_cache_6383",
+      "notes": "可能影响应用更新/安装，需单独确认（-IncludeMedium）。"
+    },
+    {
+      "id": "winsxs",
+      "name": "WinSxS 组件存储",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\Windows\\WinSxS",
+      "notes": "禁止手删；只能用 DISM /StartComponentCleanup 维护。"
+    },
+    {
+      "id": "driverstore",
+      "name": "驱动仓库 DriverStore",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\Windows\\System32\\DriverStore",
+      "notes": "禁止手删，误删可致设备失效。"
+    },
+    {
+      "id": "windows-installer",
+      "name": "Windows Installer 缓存",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\Windows\\Installer",
+      "notes": "卸载/修复依赖，禁止删除。"
+    },
+    {
+      "id": "package-cache",
+      "name": "ProgramData Package Cache",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\ProgramData\\Package Cache",
+      "notes": "安装/修复依赖。"
+    },
+    {
+      "id": "nativeimages",
+      "name": ".NET NativeImages",
+      "level": "C",
+      "risk": "medium",
+      "type": "path",
+      "path": "C:\\Windows\\assembly",
+      "notes": "系统程序集缓存，禁止手删。"
+    },
+    {
+      "id": "containers",
+      "name": "Windows Containers/Sandbox 镜像层",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\ProgramData\\Microsoft\\Windows\\Containers",
+      "notes": "容器数据；应由 Docker/Windows Sandbox 工具管理。"
+    },
+    {
+      "id": "program-files",
+      "name": "Program Files",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\Program Files",
+      "notes": "已安装软件，禁止删除。"
+    },
+    {
+      "id": "program-files-x86",
+      "name": "Program Files (x86)",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\Program Files (x86)",
+      "notes": "已安装软件，禁止删除。"
+    },
+    {
+      "id": "users",
+      "name": "用户目录根",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\Users",
+      "notes": "用户数据，禁止递归删除。"
+    },
+    {
+      "id": "system-volume-information",
+      "name": "System Volume Information",
+      "level": "C",
+      "risk": "high",
+      "type": "path",
+      "path": "C:\\System Volume Information",
+      "notes": "系统还原/卷影副本，需管理员通过系统工具管理。"
+    },
+    {
+      "id": "pagefile",
+      "name": "pagefile.sys 虚拟内存",
+      "level": "C",
+      "risk": "high",
+      "type": "file",
+      "path": "C:\\pagefile.sys",
+      "notes": "系统文件；只能通过系统设置调整。"
+    },
+    {
+      "id": "hiberfil",
+      "name": "hiberfil.sys 休眠文件",
+      "level": "C",
+      "risk": "high",
+      "type": "file",
+      "path": "C:\\hiberfil.sys",
+      "notes": "系统文件；只能通过 powercfg /h off 关闭休眠。"
+    },
+    {
+      "id": "event-logs",
+      "name": "事件日志",
+      "level": "C",
+      "risk": "medium",
+      "type": "path",
+      "path": "C:\\Windows\\System32\\winevt\\Logs",
+      "notes": "排障需要，禁止删除。"
+    },
+    {
+      "id": "windows-logs",
+      "name": "Windows 日志",
+      "level": "C",
+      "risk": "low",
+      "type": "path",
+      "path": "C:\\Windows\\Logs",
+      "notes": "CBS/DISM 等排障日志，建议保留。"
+    }
+  ]
+}
