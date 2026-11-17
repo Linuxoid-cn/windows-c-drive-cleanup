@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Skill `windows-c-drive-cleanup` with `SKILL.md` and `USAGE.md`.
 - Scripts: `scan-c-drive.ps1`, `clean-c-drive.ps1`, `verify-cleanup.ps1`, `run-skill.ps1`, `validate-skill.ps1`.
-- Machine-readable junk catalog `resources/junk-catalog.json` (A/B/C levels, 40 targets).
+- Machine-readable junk catalog `resources/junk-catalog.json` (A/B/C levels: 4 A / 23 B / 14 C, 41 targets).
 - Classification rules `resources/junk-rules.md` with admission checklist.
 - Report templates `templates/scan-report-template.md` and `templates/cleanup-report-template.md`.
 - Safety model: allow-list only, C-level blocked, `-Yes` required, in-use files skipped, reparse points skipped.
